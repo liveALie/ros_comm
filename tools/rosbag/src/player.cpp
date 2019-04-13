@@ -289,29 +289,29 @@ void Player::publish() {
 
     while (true) {
         // Set up our time_translator and publishers
-
+        //rate,multiply the publish rate by FACTOR, publish rate * FACTOR.
         time_translator_.setTimeScale(options_.time_scale);
 
-        start_time_ = view.begin()->getTime();
-        time_translator_.setRealStartTime(start_time_);
-        bag_length_ = view.getEndTime() - view.getBeginTime();
+        start_time_ = view.begin()->getTime();//获取真实开始时间
+        time_translator_.setRealStartTime(start_time_);//设置真实开始时间
+        bag_length_ = view.getEndTime() - view.getBeginTime();//计算开始到结束的时间间隔
 
         // Set the last rate control to now, so the program doesn't start delayed.
         last_rate_control_ = start_time_;
 
-        time_publisher_.setTime(start_time_);
+        time_publisher_.setTime(start_time_);//设置开始时间
 
-        ros::WallTime now_wt = ros::WallTime::now();
-        time_translator_.setTranslatedStartTime(ros::Time(now_wt.sec, now_wt.nsec));
+        ros::WallTime now_wt = ros::WallTime::now();//现在时间
+        time_translator_.setTranslatedStartTime(ros::Time(now_wt.sec, now_wt.nsec));//设置translatedStartTime
 
 
         time_publisher_.setTimeScale(options_.time_scale);
-        if (options_.bag_time)
-            time_publisher_.setPublishFrequency(options_.bag_time_frequency);
+        if (options_.bag_time)//publish the clock time
+            time_publisher_.setPublishFrequency(options_.bag_time_frequency);//use a frequency of HZ when publishing clock time
         else
             time_publisher_.setPublishFrequency(-1.0);
 
-        paused_time_ = now_wt;
+        paused_time_ = now_wt;//暂停时间
 
         // Call do-publish for each message
         for (const MessageInstance& m : view) {
